@@ -17,7 +17,11 @@
   --border: #334155;
   --radius: 12px;
 
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   color-scheme: dark;
   color: var(--text);
   background: var(--bg);
@@ -218,12 +222,38 @@ body {
 
 /* ─── Footer ─── */
 
-footer {
+footer.footer {
   margin-top: 4px;
+  text-align: center;
+}
+
+footer.footer .disclaimer {
   font-size: 12px;
   color: var(--text-dim);
   line-height: 1.6;
-  text-align: center;
+  margin-bottom: 12px;
+}
+
+footer.footer .credit {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+footer.footer .credit .heart {
+  color: #ef4444;
+  display: inline-block;
+}
+
+footer.footer .credit a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+footer.footer .credit a:hover {
+  color: var(--accent-dim);
+  text-decoration: underline;
 }
 
 /* ─── Responsive ─── */

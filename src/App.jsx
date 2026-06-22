@@ -1,54 +1,16 @@
 import { useState, useMemo } from 'react'
-import Decimal from 'decimal.js'
+import { TARIF_PLN, findTarif, calculateCost, formatRupiah } from './tarif'
 import './App.css'
-
-// Set precision for Decimal
-Decimal.set({ precision: 20 })
-
-const TARIF_PLN = [
-  { va: 450, label: '450 VA (R-1/TR)', tarif: 415, note: 'Subsidies' },
-  { va: 900, label: '900 VA (R-1/TR)', tarif: 1352, note: 'Non-subsidies' },
-  { va: 1300, label: '1.300 VA (R-1/TR)', tarif: 1444.7 },
-  { va: 2200, label: '2.200 VA (R-1/TR)', tarif: 1444.7 },
-  { va: 3500, label: '3.500 VA (R-2/TR)', tarif: 1699.53 },
-  { va: 5500, label: '5.500 VA (R-2/TR)', tarif: 1699.53 },
-  { va: 6600, label: '6.600 VA+ (R-3/TR)', tarif: 1699.53 },
-]
-
-function formatRupiah(n) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(n)
-}
 
 function App() {
   const [tdp, setTdp] = useState(9)
   const [va, setVa] = useState(1300)
   const [hours, setHours] = useState(24)
 
-  const tarifData = TARIF_PLN.find((t) => t.va === va) ?? TARIF_PLN[2]
+  const tarifData = findTarif(va)
 
   const hasil = useMemo(() => {
-    const kw = new Decimal(tdp).div(1000)
-    const perJam = kw.mul(tarifData.tarif)
-    const perHari = perJam.mul(hours)
-    const perMinggu = perHari.mul(7)
-    const perBulan = perHari.mul(30)
-    const perTahun = perHari.mul(365)
-
-    return {
-      perJam: perJam.toNumber(),
-      perHari: perHari.toNumber(),
-      perMinggu: perMinggu.toNumber(),
-      perBulan: perBulan.toNumber(),
-      perTahun: perTahun.toNumber(),
-      kwhPerJam: kw.toNumber(),
-      kwhPerHari: kw.mul(hours).toNumber(),
-      kwhPerBulan: kw.mul(hours).mul(30).toNumber(),
-    }
+    return calculateCost(tdp, hours, tarifData.tarif)
   }, [tdp, hours, tarifData])
 
   return (
@@ -147,21 +109,30 @@ function App() {
             </tr>
             <tr>
               <td>Device power</td>
-              <td>{tdp} W ({tdp / 1000} kW)</td>
+              <td>
+                {tdp} W ({tdp / 1000} kW)
+              </td>
             </tr>
             <tr>
               <td>Tarif listrik</td>
-              <td>Rp {tarifData.tarif.toLocaleString('id-ID')}/kWh ({tarifData.label})</td>
+              <td>
+                Rp {tarifData.tarif.toLocaleString('id-ID')}/kWh ({tarifData.label})
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <footer>
-        <p>
-          ⚠️ Ini estimasi aja ya — realita bisa beda karena faktor beban nyata,
-          power factor, sama biaya admin/tax. Hitungan pake asumsi device nyala{' '}
-          {hours} jam/hari terus-terusan.
+      <footer className="footer">
+        <p className="disclaimer">
+          ⚠️ Ini estimasi aja ya — realita bisa beda karena faktor beban nyata, power factor, sama
+          biaya admin/tax. Hitungan pake asumsi device nyala {hours} jam/hari terus-terusan.
+        </p>
+        <p className="credit">
+          Made with <span className="heart">❤️</span> by{' '}
+          <a href="https://github.com/dennypradipta" target="_blank" rel="noopener noreferrer">
+            Denny Pradipta
+          </a>
         </p>
       </footer>
     </div>

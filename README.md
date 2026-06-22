@@ -1,16 +1,47 @@
-# React + Vite
+# ⚡ Hitung Biaya Listrik
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kalkulator estimasi biaya listrik harian, mingguan, bulanan & tahunan berdasarkan TDP device (Watt) dan daya rumah (VA) sesuai tarif PLN.
 
-Currently, two official plugins are available:
+**Live:** [hitung-biaya-listrik.vercel.app](https://hitung-biaya-listrik.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Fitur
 
-## React Compiler
+- Hitung biaya listrik per jam, hari, minggu, bulan, dan tahun
+- Pilih daya rumah sesuai golongan PLN (450 VA – 6.600+ VA)
+- Atur jam pemakaian per hari (1–24 jam)
+- Kalkulasi presisi pakai [Decimal.js](https://github.com/MikeMcl/decimal.js/)
+- Dark mode UI — mobile friendly
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cara Pakai
 
-## Expanding the ESLint configuration
+```sh
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Buka `http://localhost:5173`, masukin TDP device & daya rumah, hasil langsung keluar.
+
+## Scripts
+
+| Perintah                | Fungsi                  |
+| ----------------------- | ----------------------- |
+| `npm run dev`           | Jalankan dev server     |
+| `npm run build`         | Build produksi          |
+| `npm test`              | Jalankan unit tests     |
+| `npm run test:coverage` | Test + laporan coverage |
+| `npm run lint`          | ESLint check            |
+| `npm run format`        | Prettier format         |
+| `npm run format:check`  | Prettier check          |
+
+## Tech Stack
+
+- **React 19** + **Vite 8**
+- **Decimal.js** — kalkulasi presisi tinggi
+- **Vitest** — unit test + coverage
+- **Prettier** + **ESLint** — formatting & linting
+- **Husky** — pre-push hook otomatis
+- **GitHub Actions** — CI (format → lint → test → coverage → build)
+
+---
+
+Made with ❤️ by [Denny Pradipta](https://github.com/dennypradipta)
