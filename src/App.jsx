@@ -4,8 +4,8 @@ import './App.css'
 const TARIF_PLN = [
   { va: 450, label: '450 VA (R-1/TR)', tarif: 415, note: 'Subsidies' },
   { va: 900, label: '900 VA (R-1/TR)', tarif: 1352, note: 'Non-subsidies' },
-  { va: 1300, label: '1.300 VA (R-1/TR)', tarif: 1467.28 },
-  { va: 2200, label: '2.200 VA (R-1/TR)', tarif: 1467.28 },
+  { va: 1300, label: '1.300 VA (R-1/TR)', tarif: 1444.7 },
+  { va: 2200, label: '2.200 VA (R-1/TR)', tarif: 1444.7 },
   { va: 3500, label: '3.500 VA (R-2/TR)', tarif: 1699.53 },
   { va: 5500, label: '5.500 VA (R-2/TR)', tarif: 1699.53 },
   { va: 6600, label: '6.600 VA+ (R-3/TR)', tarif: 1699.53 },
