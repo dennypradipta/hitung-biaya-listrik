@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
+import type { ChangeEvent } from 'react'
 import { TARIF_PLN, findTarif, calculateCost, formatRupiah } from './tarif'
-import './App.css'
+import './index.css'
 
 function App() {
-  const [tdp, setTdp] = useState(9)
-  const [va, setVa] = useState(1300)
-  const [hours, setHours] = useState(24)
+  const [tdp, setTdp] = useState<number>(9)
+  const [va, setVa] = useState<number>(1300)
+  const [hours, setHours] = useState<number>(24)
 
   const tarifData = findTarif(va)
 
@@ -31,14 +32,18 @@ function App() {
             min={0}
             step={0.1}
             value={tdp}
-            onChange={(e) => setTdp(Number(e.target.value))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setTdp(Number(e.target.value))}
           />
           <span className="hint">Contoh: 9W buat router, 65W buat laptop, 250W buat PC</span>
         </div>
 
         <div className="input-group">
           <label htmlFor="va">Daya Rumah (VA)</label>
-          <select id="va" value={va} onChange={(e) => setVa(Number(e.target.value))}>
+          <select
+            id="va"
+            value={va}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => setVa(Number(e.target.value))}
+          >
             {TARIF_PLN.map((t) => (
               <option key={t.va} value={t.va}>
                 {t.label}
@@ -57,7 +62,7 @@ function App() {
               min={1}
               max={24}
               value={hours}
-              onChange={(e) => setHours(Number(e.target.value))}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setHours(Number(e.target.value))}
             />
             <span className="hours-value">{hours} jam</span>
           </div>

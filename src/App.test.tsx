@@ -10,21 +10,21 @@ describe('App', () => {
 
   it('renders TDP input field with default value 9', () => {
     render(<App />)
-    const input = screen.getByLabelText('TDP Device (Watt)')
+    const input = screen.getByLabelText('TDP Device (Watt)') as HTMLInputElement
     expect(input).toBeInTheDocument()
     expect(input.value).toBe('9')
   })
 
   it('renders daya rumah dropdown with default 1300 VA', () => {
     render(<App />)
-    const select = screen.getByLabelText('Daya Rumah (VA)')
+    const select = screen.getByLabelText('Daya Rumah (VA)') as HTMLSelectElement
     expect(select).toBeInTheDocument()
     expect(select.value).toBe('1300')
   })
 
   it('renders hours slider with default 24', () => {
     render(<App />)
-    const slider = screen.getByLabelText('Pemakaian per Hari')
+    const slider = screen.getByLabelText('Pemakaian per Hari') as HTMLInputElement
     expect(slider).toBeInTheDocument()
     expect(slider.value).toBe('24')
   })
@@ -54,21 +54,21 @@ describe('App', () => {
 
   it('changes TDP value and recalculates', () => {
     render(<App />)
-    const input = screen.getByLabelText('TDP Device (Watt)')
+    const input = screen.getByLabelText('TDP Device (Watt)') as HTMLInputElement
     fireEvent.change(input, { target: { value: '65' } })
     expect(input.value).toBe('65')
   })
 
   it('changes daya rumah and shows correct tariff', () => {
     render(<App />)
-    const select = screen.getByLabelText('Daya Rumah (VA)')
+    const select = screen.getByLabelText('Daya Rumah (VA)') as HTMLSelectElement
     fireEvent.change(select, { target: { value: '900' } })
     expect(select.value).toBe('900')
   })
 
   it('changes hours slider and shows updated value', () => {
     render(<App />)
-    const slider = screen.getByLabelText('Pemakaian per Hari')
+    const slider = screen.getByLabelText('Pemakaian per Hari') as HTMLInputElement
     fireEvent.change(slider, { target: { value: '12' } })
     expect(slider.value).toBe('12')
     expect(screen.getByText('12 jam')).toBeInTheDocument()

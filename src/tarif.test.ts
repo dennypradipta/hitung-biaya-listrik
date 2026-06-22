@@ -6,7 +6,7 @@ describe('TARIF_PLN', () => {
     expect(TARIF_PLN).toHaveLength(7)
   })
 
-  it('each entry has va, label, tarif fields', () => {
+  it('each entry has required fields', () => {
     for (const entry of TARIF_PLN) {
       expect(entry).toHaveProperty('va')
       expect(entry).toHaveProperty('label')
@@ -57,38 +57,25 @@ describe('calculateCost', () => {
   it('calculates correctly for 9W, 24h, 1444.7 tariff', () => {
     const result = calculateCost(9, 24, 1444.7)
 
-    // kWh per jam = 9/1000 = 0.009
     expect(result.kwhPerJam).toBe(0.009)
-    // kWh per hari = 0.009 * 24 = 0.216
     expect(result.kwhPerHari).toBeCloseTo(0.216, 5)
-    // kWh per bulan = 0.216 * 30 = 6.48
     expect(result.kwhPerBulan).toBeCloseTo(6.48, 5)
 
-    // Biaya per jam = 0.009 * 1444.7 = 13.0023
     expect(result.perJam).toBeCloseTo(13.0023, 4)
-    // Biaya per hari = 13.0023 * 24 = 312.0552
     expect(result.perHari).toBeCloseTo(312.0552, 4)
-    // Biaya per minggu = 312.0552 * 7 = 2184.3864
     expect(result.perMinggu).toBeCloseTo(2184.3864, 4)
-    // Biaya per bulan = 312.0552 * 30 = 9361.656
     expect(result.perBulan).toBeCloseTo(9361.656, 4)
-    // Biaya per tahun = 312.0552 * 365 = 113900.148
     expect(result.perTahun).toBeCloseTo(113900.148, 4)
   })
 
   it('calculates correctly for 65W, 8h, 1699.53 tariff (laptop usage)', () => {
     const result = calculateCost(65, 8, 1699.53)
 
-    // kWh per jam = 65/1000 = 0.065
     expect(result.kwhPerJam).toBe(0.065)
-    // kWh per hari = 0.065 * 8 = 0.52
     expect(result.kwhPerHari).toBeCloseTo(0.52, 5)
-    // kWh per bulan = 0.52 * 30 = 15.6
     expect(result.kwhPerBulan).toBeCloseTo(15.6, 5)
 
-    // Biaya per jam = 0.065 * 1699.53 = 110.46945
     expect(result.perJam).toBeCloseTo(110.46945, 4)
-    // Biaya per hari = 110.46945 * 8 = 883.7556
     expect(result.perHari).toBeCloseTo(883.7556, 4)
   })
 
@@ -108,23 +95,16 @@ describe('calculateCost', () => {
   it('handles fractional TDP values correctly', () => {
     const result = calculateCost(0.5, 24, 1444.7)
 
-    // kWh per jam = 0.5/1000 = 0.0005
     expect(result.kwhPerJam).toBe(0.0005)
-    // kWh per hari = 0.0005 * 24 = 0.012
     expect(result.kwhPerHari).toBeCloseTo(0.012, 5)
-
-    // Biaya per hari = 0.012 * 1444.7 = 17.3364
     expect(result.perHari).toBeCloseTo(17.3364, 4)
   })
 
   it('handles large TDP values like 1500W (AC unit)', () => {
     const result = calculateCost(1500, 12, 1699.53)
 
-    // kWh per jam = 1500/1000 = 1.5
     expect(result.kwhPerJam).toBe(1.5)
-    // kWh per hari = 1.5 * 12 = 18
     expect(result.kwhPerHari).toBe(18)
-    // Biaya per hari = 18 * 1699.53 = 30591.54
     expect(result.perHari).toBeCloseTo(30591.54, 2)
   })
 
@@ -148,23 +128,25 @@ describe('calculateCost', () => {
 })
 
 describe('formatRupiah', () => {
+  const NBSP = '\u00a0'
+
   it('formats integer with IDR currency', () => {
-    expect(formatRupiah(312)).toBe('Rp 312')
+    expect(formatRupiah(312)).toBe(`Rp${NBSP}312`)
   })
 
   it('formats decimal with two fraction digits', () => {
-    expect(formatRupiah(312.06)).toBe('Rp 312,06')
+    expect(formatRupiah(312.06)).toBe(`Rp${NBSP}312,06`)
   })
 
   it('formats thousands with dot separator', () => {
-    expect(formatRupiah(113900.15)).toBe('Rp 113.900,15')
+    expect(formatRupiah(113900.15)).toBe(`Rp${NBSP}113.900,15`)
   })
 
   it('formats zero', () => {
-    expect(formatRupiah(0)).toBe('Rp 0')
+    expect(formatRupiah(0)).toBe(`Rp${NBSP}0`)
   })
 
   it('formats large numbers with correct grouping', () => {
-    expect(formatRupiah(10500000)).toBe('Rp 10.500.000')
+    expect(formatRupiah(10500000)).toBe(`Rp${NBSP}10.500.000`)
   })
 })
