@@ -1,5 +1,9 @@
 import { useState, useMemo } from 'react'
+import Decimal from 'decimal.js'
 import './App.css'
+
+// Set precision for Decimal
+Decimal.set({ precision: 20 })
 
 const TARIF_PLN = [
   { va: 450, label: '450 VA (R-1/TR)', tarif: 415, note: 'Subsidies' },
@@ -28,22 +32,22 @@ function App() {
   const tarifData = TARIF_PLN.find((t) => t.va === va) ?? TARIF_PLN[2]
 
   const hasil = useMemo(() => {
-    const kw = tdp / 1000
-    const perJam = kw * tarifData.tarif
-    const perHari = perJam * hours
-    const perMinggu = perHari * 7
-    const perBulan = perHari * 30
-    const perTahun = perHari * 365
+    const kw = new Decimal(tdp).div(1000)
+    const perJam = kw.mul(tarifData.tarif)
+    const perHari = perJam.mul(hours)
+    const perMinggu = perHari.mul(7)
+    const perBulan = perHari.mul(30)
+    const perTahun = perHari.mul(365)
 
     return {
-      perJam,
-      perHari,
-      perMinggu,
-      perBulan,
-      perTahun,
-      kwhPerJam: kw,
-      kwhPerHari: kw * hours,
-      kwhPerBulan: kw * hours * 30,
+      perJam: perJam.toNumber(),
+      perHari: perHari.toNumber(),
+      perMinggu: perMinggu.toNumber(),
+      perBulan: perBulan.toNumber(),
+      perTahun: perTahun.toNumber(),
+      kwhPerJam: kw.toNumber(),
+      kwhPerHari: kw.mul(hours).toNumber(),
+      kwhPerBulan: kw.mul(hours).mul(30).toNumber(),
     }
   }, [tdp, hours, tarifData])
 
@@ -135,11 +139,11 @@ function App() {
             </tr>
             <tr>
               <td>Konsumsi per hari</td>
-              <td>{hasil.kwhPerHari.toFixed(2)} kWh</td>
+              <td>{hasil.kwhPerHari.toFixed(3)} kWh</td>
             </tr>
             <tr>
               <td>Konsumsi per bulan</td>
-              <td>{hasil.kwhPerBulan.toFixed(2)} kWh</td>
+              <td>{hasil.kwhPerBulan.toFixed(3)} kWh</td>
             </tr>
             <tr>
               <td>Device power</td>
