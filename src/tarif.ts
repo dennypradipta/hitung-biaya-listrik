@@ -17,7 +17,9 @@ export interface CostResult {
   perTahun: number
   kwhPerJam: number
   kwhPerHari: number
+  kwhPerMinggu: number
   kwhPerBulan: number
+  kwhPerTahun: number
 }
 
 export const TARIF_PLN: TarifEntry[] = [
@@ -50,7 +52,9 @@ export function calculateCost(tdp: number, hours: number, tarif: number): CostRe
     perTahun: perTahun.toNumber(),
     kwhPerJam: kw.toNumber(),
     kwhPerHari: kw.mul(hours).toNumber(),
+    kwhPerMinggu: kw.mul(hours).mul(7).toNumber(),
     kwhPerBulan: kw.mul(hours).mul(30).toNumber(),
+    kwhPerTahun: kw.mul(hours).mul(365).toNumber(),
   }
 }
 

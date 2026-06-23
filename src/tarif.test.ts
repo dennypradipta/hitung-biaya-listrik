@@ -84,7 +84,9 @@ describe('calculateCost', () => {
 
     expect(result.kwhPerJam).toBe(0)
     expect(result.kwhPerHari).toBe(0)
+    expect(result.kwhPerMinggu).toBe(0)
     expect(result.kwhPerBulan).toBe(0)
+    expect(result.kwhPerTahun).toBe(0)
     expect(result.perJam).toBe(0)
     expect(result.perHari).toBe(0)
     expect(result.perMinggu).toBe(0)

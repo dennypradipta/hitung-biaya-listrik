@@ -1,7 +1,72 @@
 import { useState, useMemo } from 'react'
 import type { ChangeEvent } from 'react'
 import { TARIF_PLN, findTarif, calculateCost, formatRupiah } from './tarif'
+import type { CostResult } from './tarif'
 import './index.css'
+
+// ─── Collapsible StatBox ───
+
+interface FormulaLine {
+  calc: string
+  result: string
+}
+
+interface StatBoxProps {
+  label: string
+  value: string
+  highlight?: boolean
+  formula: FormulaLine[]
+}
+
+function StatBox({ label, value, highlight, formula }: StatBoxProps) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div
+      className={`stat${highlight ? ' highlight' : ''}${open ? ' open' : ''}`}
+      onClick={() => setOpen(!open)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          setOpen(!open)
+        }
+      }}
+    >
+      <div className="stat-header">
+        <div className="stat-info">
+          <span className="stat-label">{label}</span>
+          <span className="stat-value">{value}</span>
+        </div>
+        <span className={`stat-toggle${open ? ' open' : ''}`}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M4 2l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </div>
+
+      {open && (
+        <div className="stat-formula">
+          {formula.map((line, i) => (
+            <div key={i} className="formula-line">
+              <span className="formula-calc">{line.calc}</span>
+              <span className="formula-result">{line.result}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── App ───
 
 function App() {
   const [tdp, setTdp] = useState<number>(9)
@@ -10,9 +75,12 @@ function App() {
 
   const tarifData = findTarif(va)
 
-  const hasil = useMemo(() => {
+  const hasil: CostResult = useMemo(() => {
     return calculateCost(tdp, hours, tarifData.tarif)
   }, [tdp, hours, tarifData])
+
+  const kw = hasil.kwhPerJam
+  const tarifStr = `Rp ${tarifData.tarif.toLocaleString('id-ID')}`
 
   return (
     <div className="app">
@@ -50,7 +118,7 @@ function App() {
               </option>
             ))}
           </select>
-          <span className="hint">Tarif: Rp {tarifData.tarif.toLocaleString('id-ID')}/kWh</span>
+          <span className="hint">Tarif: {tarifStr}/kWh</span>
         </div>
 
         <div className="input-group">
@@ -71,28 +139,74 @@ function App() {
 
       <div className="card result">
         <h2>Estimasi Biaya</h2>
+        <p className="result-hint">Klik kartu untuk lihat rumus</p>
 
         <div className="stats">
-          <div className="stat">
-            <span className="stat-label">Per Jam</span>
-            <span className="stat-value">{formatRupiah(hasil.perJam)}</span>
-          </div>
-          <div className="stat highlight">
-            <span className="stat-label">Per Hari</span>
-            <span className="stat-value">{formatRupiah(hasil.perHari)}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Per Minggu</span>
-            <span className="stat-value">{formatRupiah(hasil.perMinggu)}</span>
-          </div>
-          <div className="stat highlight">
-            <span className="stat-label">Per Bulan (30 hr)</span>
-            <span className="stat-value">{formatRupiah(hasil.perBulan)}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Per Tahun (365 hr)</span>
-            <span className="stat-value">{formatRupiah(hasil.perTahun)}</span>
-          </div>
+          <StatBox
+            label="Per Jam"
+            value={formatRupiah(hasil.perJam)}
+            formula={[
+              { calc: `${kw.toFixed(4)} kW × ${tarifStr}/kWh`, result: formatRupiah(hasil.perJam) },
+            ]}
+          />
+          <StatBox
+            label="Per Hari"
+            value={formatRupiah(hasil.perHari)}
+            highlight
+            formula={[
+              {
+                calc: `${kw.toFixed(4)} kW × ${hours} jam`,
+                result: `${hasil.kwhPerHari.toFixed(3)} kWh`,
+              },
+              {
+                calc: `${hasil.kwhPerHari.toFixed(3)} kWh × ${tarifStr}/kWh`,
+                result: formatRupiah(hasil.perHari),
+              },
+            ]}
+          />
+          <StatBox
+            label="Per Minggu"
+            value={formatRupiah(hasil.perMinggu)}
+            formula={[
+              {
+                calc: `${kw.toFixed(4)} kW × ${hours} jam × 7 hari`,
+                result: `${hasil.kwhPerMinggu.toFixed(3)} kWh`,
+              },
+              {
+                calc: `${hasil.kwhPerMinggu.toFixed(3)} kWh × ${tarifStr}/kWh`,
+                result: formatRupiah(hasil.perMinggu),
+              },
+            ]}
+          />
+          <StatBox
+            label="Per Bulan (30 hr)"
+            value={formatRupiah(hasil.perBulan)}
+            highlight
+            formula={[
+              {
+                calc: `${kw.toFixed(4)} kW × ${hours} jam × 30 hari`,
+                result: `${hasil.kwhPerBulan.toFixed(3)} kWh`,
+              },
+              {
+                calc: `${hasil.kwhPerBulan.toFixed(3)} kWh × ${tarifStr}/kWh`,
+                result: formatRupiah(hasil.perBulan),
+              },
+            ]}
+          />
+          <StatBox
+            label="Per Tahun (365 hr)"
+            value={formatRupiah(hasil.perTahun)}
+            formula={[
+              {
+                calc: `${kw.toFixed(4)} kW × ${hours} jam × 365 hari`,
+                result: `${hasil.kwhPerTahun.toFixed(3)} kWh`,
+              },
+              {
+                calc: `${hasil.kwhPerTahun.toFixed(3)} kWh × ${tarifStr}/kWh`,
+                result: formatRupiah(hasil.perTahun),
+              },
+            ]}
+          />
         </div>
       </div>
 
@@ -109,19 +223,27 @@ function App() {
               <td>{hasil.kwhPerHari.toFixed(3)} kWh</td>
             </tr>
             <tr>
+              <td>Konsumsi per minggu</td>
+              <td>{hasil.kwhPerMinggu.toFixed(3)} kWh</td>
+            </tr>
+            <tr>
               <td>Konsumsi per bulan</td>
               <td>{hasil.kwhPerBulan.toFixed(3)} kWh</td>
             </tr>
             <tr>
+              <td>Konsumsi per tahun</td>
+              <td>{hasil.kwhPerTahun.toFixed(3)} kWh</td>
+            </tr>
+            <tr>
               <td>Device power</td>
               <td>
-                {tdp} W ({tdp / 1000} kW)
+                {tdp} W ({kw} kW)
               </td>
             </tr>
             <tr>
               <td>Tarif listrik</td>
               <td>
-                Rp {tarifData.tarif.toLocaleString('id-ID')}/kWh ({tarifData.label})
+                {tarifStr}/kWh ({tarifData.label})
               </td>
             </tr>
           </tbody>

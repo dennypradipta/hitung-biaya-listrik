@@ -148,6 +148,12 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.result-hint {
+  font-size: 11px;
+  color: var(--text-dim);
   margin-bottom: 16px;
 }
 
@@ -164,11 +170,61 @@ body {
   border-radius: 8px;
   padding: 12px 14px;
   border: 1px solid var(--border);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  user-select: none;
+}
+
+.stat:hover {
+  border-color: #475569;
+}
+
+.stat:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .stat.highlight {
   border-color: var(--accent-dim);
   background: rgba(8, 145, 178, 0.08);
+}
+
+.stat.highlight:hover {
+  border-color: var(--accent);
+}
+
+.stat.open {
+  border-color: var(--accent);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-toggle {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transition:
+    transform 0.2s,
+    color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.stat-toggle.open {
+  transform: rotate(90deg);
+  color: var(--accent);
 }
 
 .stat-label {
@@ -185,6 +241,40 @@ body {
 
 .stat.highlight .stat-value {
   color: var(--accent);
+}
+
+/* ─── Formula section ─── */
+
+.stat-formula {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.formula-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.formula-calc {
+  color: var(--text-dim);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.formula-result {
+  color: #e2e8f0;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 12px;
 }
 
 /* ─── Detail Table ─── */
